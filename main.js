@@ -33,6 +33,12 @@ function next() {
 	const card = getNextCard();
 
 	if (card) {
+		document.getElementById("card-pitch-blur").hidden = card.pitch == "";
+		document.getElementById("card-defense-blur").hidden = card.defense == "";
+		console.log(card.power);
+		document.getElementById("card-power-blur").hidden = card.power == "";
+		// document.getElementById("card-text-blur").hidden = card.power == "";
+
 		document.getElementById("card-image").src = card.image_url;
 	}
 }
