@@ -1,0 +1,99 @@
+body {
+	background-color: gray;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.main {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
+	align-items: center;
+	max-width: 800px;
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	width: 35vh;
+}
+
+#card {
+	height: 90vh;
+	width: 65vh;
+	max-height: 600px;
+	max-width: 430px;
+	position: relative;
+}
+
+#card-image {
+	position: absolute;
+	height: 100%;
+}
+
+#card-cost-blur {
+	position: absolute;
+	backdrop-filter: blur(4px);
+	height: 11%;
+	width: 16%;
+	right: 5%;
+	top: 3%;
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+#card-defense-blur {
+	position: absolute;
+	backdrop-filter: blur(4px);
+	height: 8%;
+	width: 12%;
+	right: 13%;
+	bottom: 3%;
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+#card-power-blur {
+	position: absolute;
+	backdrop-filter: blur(4px);
+	height: 8%;
+	width: 12%;
+	left: 13%;
+	bottom: 3%;
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+#card-text-blur {
+	position: absolute;
+	backdrop-filter: blur(8px);
+	height: 26%;
+	width: 82%;
+	left: 8.5%;
+	bottom: 12%;
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+#card-name-blur {
+	position: absolute;
+	backdrop-filter: blur(8px);
+	height: 5%;
+	width: 60%;
+	left: 19%;
+	top: 6%;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.correct {
+	color: green;
+}
+
+.incorrect {
+	color: red;
+}
