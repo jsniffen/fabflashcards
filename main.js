@@ -1,5 +1,6 @@
 import {cards} from "./scripts/cards.js";
 
+let card = null;
 let clazz = "";
 
 document.getElementById("form-submit").onclick = next;
@@ -8,14 +9,22 @@ document.getElementById("select-class").onchange = e => {
 };
 
 function checkTextAnswer(value, e) {
+	if (!e.value) {
+		e.setAttribute("aria-invalid", "");
+		return;
+	}
+
 	if (e.value.toLowerCase() == value.toLowerCase()) {
-		e.classList.remove("incorrect");
-		e.classList.add("correct");
+		e.setAttribute("aria-invalid", "false");
 	} else {
-		e.classList.remove("correct");
-		e.classList.add("incorrect");
+		e.setAttribute("aria-invalid", "true");
 	}
 }
+
+document.getElementById("form-name").onchange = e => checkTextAnswer(card.name, e.target);
+document.getElementById("form-cost").onchange = e => checkTextAnswer(card.cost, e.target);
+document.getElementById("form-defense").onchange = e => checkTextAnswer(card.defense, e.target);
+document.getElementById("form-power").onchange = e => checkTextAnswer(card.power, e.target);
 
 function checkAnswers(card) {
 	const name = document.getElementById("form-name");
@@ -31,9 +40,9 @@ function checkAnswers(card) {
 
 function shuffle(a) {
 	for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
+		const j = Math.floor(Math.random() * (i + 1));
+		[a[i], a[j]] = [a[j], a[i]];
+	}
 	return a;
 }
 
@@ -65,7 +74,7 @@ function getNextCard() {
 }
 
 function next() {
-	const card = getNextCard();
+	card = getNextCard();
 	console.log(card);
 
 	const formText = document.getElementById("form-text")

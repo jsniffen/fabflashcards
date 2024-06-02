@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="main.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
 	</head>
 	<body>
 		<div class="main">
@@ -16,7 +17,7 @@
 
 			<div class="form">
 
-				<select id="select-class">
+				<select id="select-class" class="form-input">
 					<option value=""></option>
 					<option value="Assassin">Assassin</option>
 					<option value="Ninja">Ninja</option>
@@ -30,9 +31,9 @@
 				<input id="form-defense" class="form-input" placeholder="Card Defense"/>
 				<input id="form-power" class="form-input" placeholder="Card Power"/>
 
-				<select id="form-text"></select>
+				<select id="form-text" class="form-input"></select>
 
-				<button id="form-submit">Submit</button>
+				<button id="form-submit" class="form-input">Submit</button>
 			</div>
 		</div>
 		<script type="module" src="main.js"></script>
