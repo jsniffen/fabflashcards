@@ -14,6 +14,10 @@ ul.dropdown {
 	z-index: 99;
 }
 
+ul.dropdown.dropdown-textarea {
+	top: 200px;
+}
+
 ul.dropdown li{
 	cursor: pointer;
 	list-style: none;
