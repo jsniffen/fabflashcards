@@ -1,5 +1,6 @@
 import {cards} from "./scripts/cards.js";
 
+let isAnswersShown = false;
 let shuffledCards = null;
 let currentCardIndex = 0;
 let correctCount = 0;
@@ -168,6 +169,8 @@ function showCard() {
 	const card = shuffledCards[currentCardIndex];
 	cardImage.src = card.image_url;
 
+	isAnswersShown = false;
+
 	cardNameInput.setAttribute("aria-invalid", "");
 	cardNameInput.value = "";
 	cardNameInput.disabled = card.name == "";
@@ -195,6 +198,7 @@ function showAnswers() {
 	Array.from(document.getElementsByClassName("blur")).forEach(e => {
 		e.hidden = true;
 	});
+	isAnswersShown = true;
 }
 
 btnReset.onclick = reset;
@@ -274,11 +278,23 @@ function checkAnswers() {
 function resizeBlurs() {
 	const card = shuffledCards[currentCardIndex];
 
-	blurCost.hidden = card.cost == "";
-	blurName.hidden = card.name == "";
-	blurText.hidden = card.functional_text_plain == "";
-	blurDefense.hidden = card.defense == "";
-	blurPower.hidden = card.power == "";
+	if (!isAnswersShown) {
+		if (cardCostInput.getAttribute("aria-invalid") != "false") {
+			blurCost.hidden = card.cost == "";
+		}
+		if (cardNameInput.getAttribute("aria-invalid") != "false") {
+			blurName.hidden = card.name == "";
+		}
+		if (cardTextInput.getAttribute("aria-invalid") != "false") {
+			blurText.hidden = card.functional_text_plain == "";
+		}
+		if (cardDefenseInput.getAttribute("aria-invalid") != "false") {
+			blurDefense.hidden = card.defense == "";
+		}
+		if (cardPowerInput.getAttribute("aria-invalid") != "false") {
+			blurPower.hidden = card.power == "";
+		}
+	}
 
 	const cardHeight = cardImage.offsetHeight;
 	const cardWidth = cardImage.offsetWidth;
