@@ -187,6 +187,8 @@ function showCard() {
 	cardPowerInput.setAttribute("aria-invalid", "");
 	cardPowerInput.value = "";
 	cardPowerInput.disabled = card.power == "";
+
+	cardNameInput.focus();
 }
 
 function showAnswers() {
