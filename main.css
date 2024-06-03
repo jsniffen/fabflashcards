@@ -1,93 +1,57 @@
-.main {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 100vh;
-	width: 100vw;
-	overflow: hidden;
-	align-items: center;
-	max-width: 800px;
+img {
+	margin: auto;
 }
 
-#card {
-	height: 90vh;
-	width: 65vh;
-	max-height: 600px;
-	max-width: 430px;
+ul.dropdown {
+	position: absolute;
+	top: calc(1rem * var(--pico-line-height) + var(--pico-form-element-spacing-vertical) * 2 + var(--pico-border-width) * 2);
+	width: 100%;
+	background-color: var(--pico-dropdown-background-color);
+	border-radius: var(--pico-border-radius);
+	border: var(--pico-border-width) solid var(--pico-dropdown-border-color);
+	padding: 0;
+	margin: 0;
+	z-index: 99;
+}
+
+ul.dropdown li{
+	cursor: pointer;
+	list-style: none;
+	padding: calc(var(--pico-form-element-spacing-vertical)* .5) var(--pico-form-element-spacing-horizontal);
+}
+
+ul.dropdown li:hover {
+	background-color: var(--pico-dropdown-hover-background-color);
+}
+
+ul.dropdown li:first-of-type{
+	margin-top: calc(var(--pico-form-element-spacing-vertical)* .5);
+	margin-bottom: 0;
+}
+
+ul.dropdown li.selected {
+	background-color: var(--pico-primary-background);
+}
+
+.position-relative {
 	position: relative;
 }
 
-#card-image {
-	position: absolute;
-	height: 100%;
-}
-
-#card-cost-blur {
-	position: absolute;
-	backdrop-filter: blur(4px);
-	height: 11%;
-	width: 16%;
-	right: 5%;
-	top: 3%;
-	border-radius: 15px;
-	overflow: hidden;
-}
-
-#card-defense-blur {
-	position: absolute;
-	backdrop-filter: blur(4px);
-	height: 8%;
-	width: 12%;
-	right: 13%;
-	bottom: 3%;
-	border-radius: 15px;
-	overflow: hidden;
-}
-
-#card-power-blur {
-	position: absolute;
-	backdrop-filter: blur(4px);
-	height: 8%;
-	width: 12%;
-	left: 13%;
-	bottom: 3%;
-	border-radius: 15px;
-	overflow: hidden;
-}
-
-#card-text-blur {
+.blur {
 	position: absolute;
 	backdrop-filter: blur(8px);
-	height: 26%;
-	width: 82%;
-	left: 8.5%;
-	bottom: 12%;
-	border-radius: 15px;
 	overflow: hidden;
 }
 
-#card-name-blur {
-	position: absolute;
-	backdrop-filter: blur(8px);
-	height: 5%;
-	width: 60%;
-	left: 19%;
-	top: 6%;
-	border-radius: 5px;
-	overflow: hidden;
+.circle {
+	border-radius: 50%;
 }
 
-.correct {
-	color: green;
+.rounded {
+	border-radius: 10px;
 }
 
-.incorrect {
-	color: red;
+.count {
+	margin-top: 20px;
+	text-align: center;
 }
-
-.form {
-	display: flex;
-	flex-direction: column;
-	width: 35vh;
-}
-

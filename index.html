@@ -1,41 +1,90 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
-		<link rel="stylesheet" href="main.css" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="color-scheme" content="light dark" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+		<link rel="stylesheet" href="main.css" />
 	</head>
 	<body>
-		<div class="main">
-			<div id="card">
-				<img id="card-image" />
-				<div id="card-cost-blur" hidden></div>
-				<div id="card-defense-blur" hidden></div>
-				<div id="card-power-blur" hidden></div>
-				<div id="card-text-blur"></div>
-				<div id="card-name-blur"></div>
+		<article>
+			<nav>
+				<ul>
+					<li><strong>FAB Flash Cards</strong></li>
+				</ul>
+				<ul>
+				<li>
+					<select id="select-clazz">
+						<option>All</option>
+						<option>Assassin</option>
+						<option>Generic</option>
+						<option>Illusionist</option>
+						<option>Ninja</option>
+					</select>
+				</li>
+				<li><button id="btn-reset" class="outline">Reset</button></li>
+			</ul>
+			</nav>
+		</article>
+		<div class="container grid">
+			<div class="container">
+				<div class="container grid">
+					<img id="card-image"></img>
+					<div id="blur-cost" class="blur circle" hidden></div>
+					<div id="blur-defense" class="blur circle" hidden></div>
+					<div id="blur-name" class="blur rounded" hidden></div>
+					<div id="blur-power" class="blur circle" hidden></div>
+					<div id="blur-text" class="blur rounded" hidden></div>
+				</div>
+				<div class="container grid">
+					<p id="count" class="count"></p>
+				</div>
 			</div>
+			<div>
+				<label>Card Name</label>
+				<div class="position-relative">
+					<input id="card-name-input" class="form-input" placeholder="Card Name"/>
+					<ul id="card-name-dropdown" class="dropdown" selected-idx="-1" hidden></ul>
+				</div>
 
-			<div class="form">
+				<label>Card Cost</label>
+				<input id="card-cost-input" class="form-input" placeholder="Card Cost"/>
 
-				<select id="select-class" class="form-input">
-					<option value=""></option>
-					<option value="Assassin">Assassin</option>
-					<option value="Ninja">Ninja</option>
-					<option value="Illusionist">Illusionist</option>
-				</select>
+				<label>Card Power</label>
+				<input id="card-power-input" class="form-input" placeholder="Card Power"/>
 
-				<br />
+				<label>Card Defense</label>
+				<input id="card-defense-input" class="form-input" placeholder="Card Defense"/>
 
-				<input id="form-name" class="form-input" placeholder="Card Name"/>
-				<input id="form-cost" class="form-input" placeholder="Card Cost"/>
-				<input id="form-defense" class="form-input" placeholder="Card Defense"/>
-				<input id="form-power" class="form-input" placeholder="Card Power"/>
+				<label>Card Text</label>
+				<div class="position-relative">
+					<textarea id="card-text-input" class="form-input" placeholder="Card Text" style="height: 200px"></textarea>
+					<ul id="card-text-dropdown" class="dropdown" selected-idx="-1" hidden></ul>
+				</div>
 
-				<select id="form-text" class="form-input"></select>
+				<div class="container grid">
+					<button id="btn-check-answer" class="outline">Check</button>
+					<button id="btn-show-answer" class="outline">Show Answer</button>
+					<button id="btn-skip" class="outline">Skip</button>
+				</div>
 
-				<button id="form-submit" class="form-input">Submit</button>
 			</div>
+			<dialog id="dialog-end">
+				<article>
+					<header>
+						<p>
+							<strong>Great Job!</strong>
+						</p>
+					</header>
+				<p id="score"></p>
+				<div class="container grid">
+					<button id="btn-play-again" class="outline">Play Again</button>
+				</div>
+				</article>
+			</dialog>
 		</div>
+		<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
 		<script type="module" src="main.js"></script>
 	</body>
 </html>

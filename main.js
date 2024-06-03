@@ -1,41 +1,136 @@
 import {cards} from "./scripts/cards.js";
 
-let card = null;
-let clazz = "";
+let shuffledCards = null;
+let currentCardIndex = 0;
+let correctCount = 0;
 
-document.getElementById("form-submit").onclick = next;
-document.getElementById("select-class").onchange = e => {
-	clazz = e.target.value;
+const dialogEnd = document.getElementById("dialog-end");
+const blurCost = document.getElementById("blur-cost")
+const blurDefense = document.getElementById("blur-defense")
+const blurName = document.getElementById("blur-name")
+const blurPower = document.getElementById("blur-power")
+const blurText = document.getElementById("blur-text")
+
+const btnReset = document.getElementById("btn-reset");
+const btnCheckAnswer = document.getElementById("btn-check-answer");
+const btnShowAnswer = document.getElementById("btn-show-answer");
+const btnSkip = document.getElementById("btn-skip");
+const selectClazz = document.getElementById("select-clazz");
+const cardImage = document.getElementById("card-image");
+
+const btnPlayAgain = document.getElementById("btn-play-again");
+btnPlayAgain.onclick = () => {
+	dialogEnd.removeAttribute("open");
+	reset();
 };
 
-function checkTextAnswer(value, e) {
-	if (!e.value) {
-		e.setAttribute("aria-invalid", "");
+cardImage.onload = () => {
+	resizeBlurs();
+}
+
+const score = document.getElementById("score");
+const count = document.getElementById("count");
+
+const cardNameDropdown = document.getElementById("card-name-dropdown");
+const cardNameInput = document.getElementById("card-name-input");
+const cardTextDropdown = document.getElementById("card-text-dropdown");
+const cardTextInput = document.getElementById("card-text-input");
+const cardCostInput = document.getElementById("card-cost-input");
+const cardDefenseInput = document.getElementById("card-defense-input");
+const cardPowerInput = document.getElementById("card-power-input");
+
+const cardNames = new Set(cards.map(c => c.name));
+const cardNameSearchIndex = new Fuse(Array.from(cardNames), {includeScore: true, threshold: 0.35, ignoreLocation: true});
+const cardText = new Set(cards.map(c => c.functional_text_plain));
+const cardTextSearchIndex = new Fuse(Array.from(cardText), {includeScore: true, threshold: 0.9, ignoreLocation: true});
+
+cardNameInput.onkeydown = e => searchOnKeyDown(e, cardNameDropdown);
+cardNameInput.oninput = e => searchOnInput(e, cardNameDropdown, cardNameSearchIndex);
+
+cardTextInput.onkeydown = e => searchOnKeyDown(e, cardTextDropdown);
+cardTextInput.oninput = e => searchOnInput(e, cardTextDropdown, cardTextSearchIndex);
+
+document.onclick = e => {
+	cardTextDropdown.hidden = true;
+	cardNameDropdown.hidden = true;
+};
+
+function searchOnKeyDown(e, dropdown) {
+	if (e.key == "Tab" || e.key == "Escape") {
+		dropdown.hidden = true;
 		return;
 	}
 
-	if (e.value.toLowerCase() == value.toLowerCase()) {
-		e.setAttribute("aria-invalid", "false");
-	} else {
-		e.setAttribute("aria-invalid", "true");
+	let selectedIdx = parseInt(dropdown.getAttribute("selected-idx"));
+	if (e.key == "Enter") {
+		// e.stopPropagation();
+
+		if (selectedIdx >= 0 && selectedIdx <= dropdown.children.length) {
+			e.target.value = dropdown.children[selectedIdx].textContent;
+		}
+
+		dropdown.hidden = true;
+		return;
+	}
+
+	let newSelectedIdx = null;
+	if (e.key == "ArrowDown" && selectedIdx < dropdown.children.length - 1) {
+		newSelectedIdx = selectedIdx + 1;
+	}
+	
+	if (e.key == "ArrowUp" && selectedIdx > 0) {
+		newSelectedIdx = selectedIdx - 1;
+	}
+
+	if (newSelectedIdx != null) {
+		dropdown.setAttribute("selected-idx", newSelectedIdx);
+		Array.from(dropdown.children).forEach((e, i) => {
+			if (i == newSelectedIdx) {
+				e.classList.add("selected");
+			} else {
+				e.classList.remove("selected");
+			}
+		});
 	}
 }
 
-document.getElementById("form-name").onchange = e => checkTextAnswer(card.name, e.target);
-document.getElementById("form-cost").onchange = e => checkTextAnswer(card.cost, e.target);
-document.getElementById("form-defense").onchange = e => checkTextAnswer(card.defense, e.target);
-document.getElementById("form-power").onchange = e => checkTextAnswer(card.power, e.target);
+function searchOnInput(e, dropdown, searchIndex) {
+	// Handle enter key for textarea elements.
+	if (e.inputType == "insertLineBreak") {
+		return;
+	}
 
-function checkAnswers(card) {
-	const name = document.getElementById("form-name");
-	const cost = document.getElementById("form-cost");
-	const defense = document.getElementById("form-defense");
-	const power = document.getElementById("form-power");
+	dropdown.setAttribute("selected-idx", -1);
 
-	checkTextAnswer(card.name, name);
-	checkTextAnswer(card.cost, cost);
-	checkTextAnswer(card.defense, defense);
-	checkTextAnswer(card.power, power);
+	const lis = searchIndex
+		.search(e.target.value)
+		.map(c => c.item)
+		.slice(0, 5)
+		.map((name, i) => createDropdownLi(i, e.target, dropdown, name, -1));
+
+	if (lis.length == 0) {
+		dropdown.hidden = true;
+	} else {
+		dropdown.innerHTML = "";
+		dropdown.append(...lis);
+		dropdown.hidden = false;
+	}
+}
+
+function createDropdownLi(i, input, ul, text, selectedIdx) {
+	const li = document.createElement("li");
+	li.innerHTML = text;
+
+	if (i == selectedIdx) {
+		li.classList.add("selected");
+	}
+
+	li.onclick = () => {
+		input.value = text;
+		ul.hidden = true;
+	}
+
+	return li;
 }
 
 function shuffle(a) {
@@ -46,52 +141,179 @@ function shuffle(a) {
 	return a;
 }
 
-function createOptionElement(card) {
-	const e = document.createElement("option");
-	e.innerHTML = card.functional_text_plain;
-	e.value = card.id;
-	return e;
-}
+function reset() {
+	const clazz = selectClazz.value;
+	if (clazz == "All") {
+		shuffledCards = cards;
+	} else {
+		shuffledCards = cards.filter(card => card.types.includes(clazz));
+	}
 
-function getSimilarCards(card) {
-	const filteredCards = cards.filter(c => {
-		return c.name != card.name &&
-			c.types.sort().join("") == card.types.sort().join("");
-	});
-	const options = shuffle(filteredCards).slice(0, 2);
-	options.push(card);
-	return shuffle(options);
-}
+	correctCount = 0;
 
+	shuffledCards = shuffle(shuffledCards);
+	currentCardIndex = 0;
+	count.textContent = `${currentCardIndex+1}/${shuffledCards.length}`;
 
-function getNextCard() {
-	const filteredCards = cards.filter(c => {
-		return clazz ? c.types.includes(clazz) : true;
-	});
-
-	const i = Math.floor(Math.random() * filteredCards.length)
-	return filteredCards[i];
+	showCard();
 }
 
 function next() {
-	card = getNextCard();
-	console.log(card);
+	currentCardIndex++;
+	count.textContent = `${currentCardIndex+1}/${shuffledCards.length}`;
+	console.log(shuffledCards[currentCardIndex]);
+}
 
-	const formText = document.getElementById("form-text")
-	formText.innerHTML = "";
-	const options = getSimilarCards(card).map(createOptionElement);
-	formText.append(...options);
+function showCard() {
+	const card = shuffledCards[currentCardIndex];
+	cardImage.src = card.image_url;
 
-	if (card) {
-		document.getElementById("card-cost-blur").hidden = card.cost == "";
-		document.getElementById("card-defense-blur").hidden = card.defense == "";
-		document.getElementById("card-power-blur").hidden = card.power == "";
-		// document.getElementById("card-text-blur").hidden = card.power == "";
+	cardNameInput.setAttribute("aria-invalid", "");
+	cardNameInput.value = "";
+	cardNameInput.disabled = card.name == "";
 
-		document.getElementById("card-image").src = card.image_url;
+	cardTextInput.setAttribute("aria-invalid", "");
+	cardTextInput.value = "";
+	cardTextInput.disabled = card.functional_text_plain == "";
 
-		document.getElementById("form-submit").onclick = () => checkAnswers(card);
+	cardCostInput.setAttribute("aria-invalid", "");
+	cardCostInput.value = "";
+	cardCostInput.disabled = card.cost == "";
+
+	cardDefenseInput.setAttribute("aria-invalid", "");
+	cardDefenseInput.value = "";
+	cardDefenseInput.disabled = card.defense == "";
+
+	cardPowerInput.setAttribute("aria-invalid", "");
+	cardPowerInput.value = "";
+	cardPowerInput.disabled = card.power == "";
+}
+
+function showAnswers() {
+	Array.from(document.getElementsByClassName("blur")).forEach(e => {
+		e.hidden = true;
+	});
+}
+
+btnReset.onclick = reset;
+btnSkip.onclick = () => skip();
+btnCheckAnswer.onclick = () => checkAnswers();
+btnShowAnswer.onclick = showAnswers;
+
+function skip() {
+	if (currentCardIndex >= shuffledCards.length - 1) {
+		gameEnd();
+		return;
+	}
+
+	next();
+	showCard();
+}
+
+function checkAnswers() {
+	const card = shuffledCards[currentCardIndex];
+
+	let correct = true;
+
+	if (card.name) {
+		const nameCorrect = cardNameInput.value.trim() == card.name;
+		cardNameInput.setAttribute("aria-invalid", !nameCorrect);
+		if (nameCorrect) {
+			blurName.hidden = true;
+		}
+		correct = correct && nameCorrect;
+	}
+
+	if (card.functional_text_plain) {
+		const textCorrect = cardTextInput.value.trim() == card.functional_text_plain;
+		console.log(cardTextInput.value, card.functional_text_plain);
+		cardTextInput.setAttribute("aria-invalid", !textCorrect);
+		if (textCorrect) {
+			blurText.hidden = true;
+		}
+		correct = correct && textCorrect;
+	}
+
+	if (card.cost) {
+		const costCorrect = cardCostInput.value.trim() == card.cost;
+		cardCostInput.setAttribute("aria-invalid", !costCorrect);
+		if (costCorrect) {
+			blurCost.hidden = true;
+		}
+		correct = correct && costCorrect;
+	}
+
+	if (card.defense) {
+		const defenseCorrect = cardDefenseInput.value.trim() == card.defense;
+		cardDefenseInput.setAttribute("aria-invalid", !defenseCorrect);
+		if (defenseCorrect) {
+			blurDefense.hidden = true;
+		}
+		correct = correct && defenseCorrect;
+	}
+
+	if (card.power) {
+		const powerCorrect = cardPowerInput.value.trim() == card.power;
+		cardPowerInput.setAttribute("aria-invalid", !powerCorrect);
+		if (powerCorrect) {
+			blurPower.hidden = true;
+		}
+		correct = correct && powerCorrect;
+	}
+
+	if (correct) {
+		correctCount += 1
+		score.textContent = `${correctCount}/${shuffledCards.length} Correct`;
+
+		setTimeout(() => skip(), 1000);
 	}
 }
 
-next();
+function resizeBlurs() {
+	const card = shuffledCards[currentCardIndex];
+
+	blurCost.hidden = card.cost == "";
+	blurName.hidden = card.name == "";
+	blurText.hidden = card.functional_text_plain == "";
+	blurDefense.hidden = card.defense == "";
+	blurPower.hidden = card.power == "";
+
+	const cardHeight = cardImage.offsetHeight;
+	const cardWidth = cardImage.offsetWidth;
+
+	blurCost.style.width = cardWidth/6.5 + "px";
+	blurCost.style.height = cardWidth/6.5 + "px"
+	blurCost.style.top = cardImage.offsetTop + cardHeight/30 + "px";
+	blurCost.style.left = cardImage.offsetLeft + cardWidth/1.25 + "px";
+
+	blurName.style.width = cardWidth/1.5 + "px";
+	blurName.style.height = cardHeight/16 + "px";
+	blurName.style.top = cardImage.offsetTop + cardHeight/18 + "px";
+	blurName.style.left = cardImage.offsetLeft + cardWidth/6 + "px";
+
+	blurText.style.width = cardWidth/1.2 + "px";
+	blurText.style.height = cardHeight/3.4 + "px";
+	blurText.style.top = cardImage.offsetTop + cardHeight/1.7 + "px";
+	blurText.style.left = cardImage.offsetLeft + cardWidth/12.5 + "px";
+
+	blurDefense.style.width = cardHeight/17 + "px";
+	blurDefense.style.height = cardHeight/17 + "px"
+	blurDefense.style.top = cardImage.offsetTop + cardHeight/1.135 + "px";
+	blurDefense.style.left = cardImage.offsetLeft + cardWidth/1.27 + "px";
+
+	blurPower.style.width = cardHeight/17 + "px";
+	blurPower.style.height = cardHeight/17 + "px"
+	blurPower.style.top = cardImage.offsetTop + cardHeight/1.135 + "px";
+	blurPower.style.left = cardImage.offsetLeft + cardWidth/7.68 + "px";
+}
+
+function gameEnd() {
+	score.textContent = `You guessed ${correctCount}/${shuffledCards.length} correctly!`
+	dialogEnd.setAttribute("open", "");
+}
+
+window.addEventListener("resize", e => {
+	resizeBlurs();
+});
+
+reset();

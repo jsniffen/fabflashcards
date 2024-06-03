@@ -17,6 +17,9 @@ for card in all_cards:
     if card["set_id"] != "MST":
         continue
 
+    if card["name"] == "Inner Chi":
+        continue
+
     if "Hero" in card["types"]:
         continue
 
