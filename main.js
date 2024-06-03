@@ -216,7 +216,7 @@ function checkAnswers() {
 	let correct = true;
 
 	if (card.name) {
-		const nameCorrect = cardNameInput.value.trim() == card.name;
+		const nameCorrect = cardNameInput.value.trim().toLowerCase() == card.name.toLowerCase();
 		cardNameInput.setAttribute("aria-invalid", !nameCorrect);
 		if (nameCorrect) {
 			blurName.hidden = true;
@@ -225,7 +225,7 @@ function checkAnswers() {
 	}
 
 	if (card.functional_text_plain) {
-		const textCorrect = cardTextInput.value.trim() == card.functional_text_plain;
+		const textCorrect = cardTextInput.value.trim().toLowerCase() == card.functional_text_plain.toLowerCase();
 		console.log(cardTextInput.value, card.functional_text_plain);
 		cardTextInput.setAttribute("aria-invalid", !textCorrect);
 		if (textCorrect) {

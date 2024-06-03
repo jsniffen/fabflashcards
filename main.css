@@ -55,3 +55,9 @@ ul.dropdown li.selected {
 	margin-top: 20px;
 	text-align: center;
 }
+
+.disclaimer {
+	color: var(--pico-secondary-background);
+	font-size: small;
+	text-align: center;
+}
