@@ -165,6 +165,8 @@ function next() {
 }
 
 function showCard() {
+	cardImage.style.visibility = "hidden";
+
 	const card = shuffledCards[currentCardIndex];
 	cardImage.src = `https://storage.googleapis.com/fabflashcards/assets/${card.id}.png`
 
@@ -322,6 +324,8 @@ function resizeBlurs() {
 	blurPower.style.height = cardHeight/17 + "px"
 	blurPower.style.top = cardImage.offsetTop + cardHeight/1.135 + "px";
 	blurPower.style.left = cardImage.offsetLeft + cardWidth/7.68 + "px";
+
+	cardImage.style.visibility = "visible";
 }
 
 function gameEnd() {
