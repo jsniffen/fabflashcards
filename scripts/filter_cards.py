@@ -1,7 +1,9 @@
 import json
 
 input_file_name = "cards.json"
-output_file_name = "cards.js"
+output_json_file_name = "filtered_cards.json"
+output_js_file_Name = "../cards.js"
+
 keys = ["power", "cost", "defense", "functional_text_plain", "health", "id", "image_url", "name", "set_id", "pitch", "types"]
 
 all_cards = json.loads(open(input_file_name).read())
@@ -46,5 +48,5 @@ for i in range(0, 239):
     if want not in card_ids:
         print(f"missing: {want}")
 
-output_file_content = f"export const cards = {json.dumps(cards)}"
-open(output_file_name, "w+").write(output_file_content)
+open(output_json_file_name, "w+").write(json.dumps(cards))
+open(output_js_file_Name, "w+").write(f"export const cards = {json.dumps(cards)}")

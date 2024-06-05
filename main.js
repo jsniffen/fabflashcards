@@ -162,12 +162,11 @@ function reset() {
 function next() {
 	currentCardIndex++;
 	count.textContent = `${currentCardIndex+1}/${shuffledCards.length}`;
-	console.log(shuffledCards[currentCardIndex]);
 }
 
 function showCard() {
 	const card = shuffledCards[currentCardIndex];
-	cardImage.src = card.image_url;
+	cardImage.src = `https://storage.googleapis.com/fabflashcards/assets/${card.id}.png`
 
 	isAnswersShown = false;
 
